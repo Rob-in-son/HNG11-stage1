@@ -42,13 +42,15 @@ while IFS=';' read -r username groups;
         username=$(echo "$username" | xargs)
         groups=$(echo "$groups" | xargs)
 
+        # Check if user already exists
+        if id -u "$username" >/dev/null 2>&1; then
+            log_message "User '$username' already exists. Skipping creation."
+            continue
+        fi
+
         # Create user with the home directory
         useradd -m $username
-        log_message "Created user: $username"
-
-        # Create user with home directory
-        useradd -m "$username"
-        log_message "Created user: $username"
+        log_message "Created user: $username" || log_message "Failed to create user: $username"
 
         # Set random password
         password=$(gen_pass)
