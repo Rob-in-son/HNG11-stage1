@@ -21,6 +21,11 @@ PASSWORD_FILE="/var/secure/user_passwords.txt"
 # Create log file if it doesn't exist
 touch "$LOG_FILE"
 
+# Define function to log messages
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S'): $1" >> "$LOG_FILE"
+}
+
 # Ensure the directory for PASSWORD_FILE exists
 PASSWORD_DIR=$(dirname "$PASSWORD_FILE")
 if [ ! -d "$PASSWORD_DIR" ]; then
@@ -33,10 +38,6 @@ fi
 touch "$PASSWORD_FILE"
 chmod 600 "$PASSWORD_FILE"
 
-# Define function to log messages
-log_message() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S'): $1" >> "$LOG_FILE"
-}
 
 # Function to generate password
 gen_pass() {
