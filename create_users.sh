@@ -55,6 +55,20 @@ while IFS=; read -r username groups;
         echo "$username:$password" | chpasswd
         echo "$username:$password" >> "$PASSWORD_FILE"
         log_message "Set password for user: $username"
+
+        # Add user to additional groups
+        IFS=',' read -ra group_array <<< "$groups"
+        for group in "${group_array[@]}"; do
+            group=$(echo "$group" | xargs)
+            if ! getent group "$group" >/dev/null; then
+                groupadd "$group"
+                log_message "Created group: $group"
+            fi
+            usermod -a -G "$group" "$username"
+            log_message "Added user $username to group: $group"
+        done
+
+        log_message "Completed setup for user: $username"
     done < $FILE_NAME
 
-# Light; sudo,dev,www-data
+echo "User creation process completed. Check $LOG_FILE for details."
