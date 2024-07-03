@@ -21,9 +21,13 @@ PASSWORD_FILE="/var/secure/user_passwords.txt"
 # Create log file if it doesn't exist
 touch "$LOG_FILE"
 
-# Create password file if it doesn't exist and set permissions
-touch "$PASSWORD_FILE"
-chmod 600 "$PASSWORD_FILE"
+# Ensure the directory for PASSWORD_FILE exists
+PASSWORD_DIR=$(dirname "$PASSWORD_FILE")
+if [ ! -d "$PASSWORD_DIR" ]; then
+    mkdir -p "$PASSWORD_DIR"
+    chmod 700 "$PASSWORD_DIR"
+    log_message "Created $PASSWORD_DIR directory."
+fi
 
 # Define function to log messages
 log_message() {
