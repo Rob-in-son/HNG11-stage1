@@ -63,8 +63,8 @@ while IFS=';' read -r username groups;
 
         # Set random password
         password=$(gen_pass)
-        echo "$username:$password" | chpasswd
-        echo "$username:$password" >> "$PASSWORD_FILE"
+        echo "$username,$password" | chpasswd
+        echo "$username,$password" >> "$PASSWORD_FILE"
         log_message "Set password for user: $username"
 
         # Add user to additional groups
