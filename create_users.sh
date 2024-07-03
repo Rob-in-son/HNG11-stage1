@@ -2,7 +2,7 @@
 
 # Check if the script is run as root
 if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 
+   echo "Switch to root to run this script" 
    exit 1
 fi
 
@@ -25,24 +25,36 @@ touch "$LOG_FILE"
 touch "$PASSWORD_FILE"
 chmod 600 "$PASSWORD_FILE"
 
+# Define function to log messages
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S'): $1" >> "$LOG_FILE"
+}
 
+# Function to generate password
+gen_pass() {
+    < /dev/urandom tr -dc 'A-Za-z0-9!@#$%^&*()_+' | head -c 12
+}
 
 # Read each line in the file
-while IFS= read -r line;
+while IFS=; read -r username groups;
     do
-        #extract username from the line
-        user=$(cut -d';' -f1)
+        # Remove leading & trailing whitespace
+        username=$(echo "$username" | xargs)
+        groups=$(echo "$groups" | xargs)
 
-        #Add user with the home directory
-        useradd -m $user
+        # Create user with the home directory
+        useradd -m $username
+        log_message "Created user: $username"
 
-        #check if user is created
-        if id -u $user &> /dev/null; then
-            echo "User '$user' exists."
-        else
-            echo "User '$user' does not exist."
-        fi
-        # cut -d';' -f2- 
+        # Create user with home directory
+        useradd -m "$username"
+        log_message "Created user: $username"
+
+        # Set random password
+        password=$(gen_pass)
+        echo "$username:$password" | chpasswd
+        echo "$username:$password" >> "$PASSWORD_FILE"
+        log_message "Set password for user: $username"
     done < $FILE_NAME
 
 # Light; sudo,dev,www-data
