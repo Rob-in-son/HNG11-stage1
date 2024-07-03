@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Check if the script is run as root
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
+
+# Check if input file is provided
+if [ $# -eq 0 ]; then
+    echo "You need to provide the employees.txt file"
+    exit 1
+fi
+
 #Get and store filename as a variable
 FILE_NAME=$1
 
@@ -8,7 +20,7 @@ while IFS= read -r line;
     do
         #extract username from the line
         user=$(cut -d';' -f1)
-        
+
         #Add user with the home directory
         useradd -m $user
 
