@@ -29,6 +29,10 @@ if [ ! -d "$PASSWORD_DIR" ]; then
     log_message "Created $PASSWORD_DIR directory."
 fi
 
+# Create password file if it doesn't exist and set permissions
+touch "$PASSWORD_FILE"
+chmod 600 "$PASSWORD_FILE"
+
 # Define function to log messages
 log_message() {
     echo "$(date '+%Y-%m-%d %H:%M:%S'): $1" >> "$LOG_FILE"
