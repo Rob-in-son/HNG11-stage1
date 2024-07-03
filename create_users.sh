@@ -36,7 +36,7 @@ gen_pass() {
 }
 
 # Read each line in the file
-while IFS=; read -r username groups;
+while IFS=';' read -r username groups;
     do
         # Remove leading & trailing whitespace
         username=$(echo "$username" | xargs)
