@@ -12,8 +12,20 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-#Get and store filename as a variable
+#Define variables
 FILE_NAME=$1
+LOG_FILE="/var/log/user_management.log"
+PASSWORD_FILE="/var/secure/user_passwords.txt"
+
+
+# Create log file if it doesn't exist
+touch "$LOG_FILE"
+
+# Create password file if it doesn't exist and set permissions
+touch "$PASSWORD_FILE"
+chmod 600 "$PASSWORD_FILE"
+
+
 
 # Read each line in the file
 while IFS= read -r line;
